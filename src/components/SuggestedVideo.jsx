@@ -1,11 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Time from "../loader/Time";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { abbreviateNumber } from "js-abbreviation-number";
+/* eslint-disable react/prop-types */
 
+import { abbreviateNumber } from "js-abbreviation-number";
+import { useEffect } from "react";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import Time from "../loader/Time";
+
+// eslint-disable-next-line react/prop-types
 function SuggestedVideo({ video }) {
-  console.log(video);
+  const {  loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(loading){
+      navigate("/");
+    }
+  }, [loading]);
+
+  
   return (
     <div>
       <Link to={`/video/${video?.videoId}`}>

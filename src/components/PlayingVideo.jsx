@@ -1,21 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchData } from "../utils/rapidapi";
-import ReactPlayer from "react-player";
-import { AiOutlineLike } from "react-icons/ai";
 import { abbreviateNumber } from "js-abbreviation-number";
-import SuggestedVideo from "./SuggestedVideo";
+import { useEffect, useState } from "react";
+import { AiOutlineLike } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
+import ReactPlayer from "react-player";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import { fetchData } from "../utils/rapidapi";
+import Comments from "./Comments";
+import SuggestedVideo from "./SuggestedVideo";
 
 function PlayingVideo() {
   const [video, setVideo] = useState();
   const [realatedVideo, setRelativeVideo] = useState();
   const { id } = useParams();
-
+  const {loading} = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
     fetchVideoDetails();
     fetchRelatedVideo();
-  }, [id]);
+    if(loading){
+      navigate("/");
+    }
+  }, [id ,loading]);
+  
 
   const fetchVideoDetails = () => {
     fetchData(`video/details/?id=${id}`).then((res) => {
@@ -89,6 +96,18 @@ function PlayingVideo() {
           </div>
           <div className="flex gap-x-6 font-semibold rounded-xl mt-4 text-xl">
             {video?.stats?.comments} <p>Comments</p>
+          </div>
+
+
+          {/* comments sections  */}
+          <div className="mt-16">
+            <div className="mb-10">
+            <input type="text" name="" id="" className="border border-b-black h-10 w-[100%] pl-6 pb-0 text-lg focus:outline-none focus:border-t-transparent focus:border-l-transparent mb-5 " placeholder="Add a Comment " />
+            <br />
+            <button className="borde rounded-lg mr-5 w-20 h-10 bg-red-500 text-white text-lg">Cancel</button>
+            <button className="border rounded-lg w-32 h-10  bg-gray-200 ">Comment</button>
+            </div>
+              <Comments/>
           </div>
         </div>
         <div className="flex flex-col px-4 py-6 h-[calc(100vh-4.625rem)] overflow-y-scroll overflow-x-hidden lg:w-[350px] xl:w-[400px]">
